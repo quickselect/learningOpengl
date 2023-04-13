@@ -293,19 +293,55 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
+int currentKey = 0;
+void function_name(GLFWwindow* window, int key, int scancode, int action, int mods);
 void processInput(GLFWwindow* window)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
 	float cameraSpeed = static_cast<float>(2.5 * deltaTime); // adjust accordingly
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	// if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	// 	glfwSetWindowShouldClose(window, true);
+	// if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	// 	cameraPos += cameraSpeed * glm::vec3(cameraFront.x, 0.0f, cameraFront.z);
+	// if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	// 	cameraPos -= cameraSpeed * glm::vec3(cameraFront.x, 0.0f, cameraFront.z);
+	// if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	// 	cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	// if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	// 	cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+	// //switch(GLFW_KEY)
+	glfwSetKeyCallback(window, function_name);
+	switch (currentKey) {
+	case GLFW_KEY_ESCAPE:
+		glfwSetWindowShouldClose(window, true);
+		break;
+	case GLFW_KEY_W:
 		cameraPos += cameraSpeed * glm::vec3(cameraFront.x, 0.0f, cameraFront.z);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		currentKey = 0;
+		break;
+	case GLFW_KEY_S:
 		cameraPos -= cameraSpeed * glm::vec3(cameraFront.x, 0.0f, cameraFront.z);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		currentKey = 0;
+		break;
+	case GLFW_KEY_A:
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		currentKey = 0;
+		break;
+	case GLFW_KEY_D:
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		currentKey = 0;
+		break;
+	default:
+		currentKey = 0;
+		break;
+	}
+}
+
+void function_name(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	currentKey = key;
+	//if (key == GLFW_KEY_E && action == GLFW_PRESS)
+	//    activate_airship();
 }
 
 float yaw = -90.0f;
