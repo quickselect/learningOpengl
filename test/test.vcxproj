@@ -137,6 +137,7 @@
     <ClCompile Include="..\..\..\..\..\..\Games\glad\src\glad.c" />
     <ClCompile Include="FileName.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
