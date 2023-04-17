@@ -4,6 +4,9 @@
 #include <fmt/core.h>
 #include <iostream>
 #include "Shader.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -138,6 +141,9 @@ int main()
 	bool test = (0x6996 >> v) & 1;
 	fmt::print("{}", test);
 
+
+
+
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -158,10 +164,26 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
+		glm::mat4 trans = glm::mat4(1.0f);
+		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		unsigned int transformLoc = glGetUniformLocation(ourShader.m_ID, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 		ourShader.use();
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		// glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		trans = glm::mat4(1.0f);
+		float time = glfwGetTime();
+		trans = glm::translate(trans, glm::vec3(-.5f, .5f, 0));
+		trans = glm::scale(trans, glm::vec3(abs(sin(time)), abs(sin(time)), 0));
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+		ourShader.use();
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
