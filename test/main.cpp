@@ -19,6 +19,9 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
+float deltaTime = 0.0f;	// Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
+
 int main()
 {
 	// glfw: initialize and configure
@@ -191,6 +194,9 @@ int main()
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 		// input
 		// -----
 		processInput(window);
@@ -248,21 +254,50 @@ int main()
 	return 0;
 }
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void key_callback2(GLFWwindow* window, int key, int scancode, int action, int mods);
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	const float cameraSpeed = 0.05f; // adjust accordingly
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	// float cameraSpeed = 2.5f * deltaTime;
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetKeyCallback(window, key_callback2);
+
+}
+float cameraSpeed = 2.5f * deltaTime;
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	//if (key == GLFW_KEY_E && action == GLFW_PRESS)
+	//	activate_airship();
+	switch (key) {
+	case GLFW_KEY_W:
 		cameraPos += cameraSpeed * cameraFront;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cameraPos -= cameraSpeed * cameraFront;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		break;
+	case GLFW_KEY_S:
+		cameraPos += cameraSpeed * cameraFront;
+		break;
+	default:
+		break;
+	}
+}
+
+void key_callback2(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	//if (key == GLFW_KEY_E && action == GLFW_PRESS)
+	//	activate_airship();
+	switch (key) {
+	case GLFW_KEY_A:
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		break;
+	case GLFW_KEY_D:
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		break;
+	default:
+		break;
+	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
