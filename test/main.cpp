@@ -130,6 +130,14 @@ int main()
 	// uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	unsigned int v = 3;  // word value to compute the parity of
+	v ^= v >> 16;
+	v ^= v >> 8;
+	v ^= v >> 4;
+	v &= 0xf;
+	bool test = (0x6996 >> v) & 1;
+	fmt::print("{}", test);
+
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
