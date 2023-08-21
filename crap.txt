@@ -1,0 +1,74 @@
+the count constant inside any particular render doesn’t change over time. It’s our component that’s called again — and each render “sees” its own count value that’s isolated between renders.
+// During first render
+function Counter() {
+  const count = 0; // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+
+// After a click, our function is called again
+function Counter() {
+  const count = 1; // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+
+// After another click, our function is called again
+function Counter() {
+  const count = 2; // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+
+
+Inside any particular render, props and state forever stay the same. But if props and state are isolated between renders, so are any values using them (including the event handlers). They also “belong” to a particular render.
+
+It’s not the count variable that somehow changes inside an “unchanging” effect. It’s the effect function itself that’s different on every render.
+
+// During first render
+function Counter() {
+  // ...
+  useEffect(
+    // Effect function from first render
+    () => {
+      document.title = `You clicked ${0} times`;
+    }
+  );
+  // ...
+}
+
+// After a click, our function is called again
+function Counter() {
+  // ...
+  useEffect(
+    // Effect function from second render
+    () => {
+      document.title = `You clicked ${1} times`;
+    }
+  );
+  // ...
+}
+
+Conceptually, you can imagine effects are a part of the render result.
+
+useEffect lets you synchronize things outside of the React tree according to our props and state.
+
+When setting a state variable depends on the current value of another state variable, you might want to try replacing them both with useReducer.
+
+We can put the reducer itself inside our component to read props:
+
+If you only use some functions inside an effect, move them directly into that effect:
+
+we make the function itself only change when necessary.
+// ✅ Preserves identity when its own deps are the same
+  const getFetchUrl = useCallback((query) => {
+    return 'https://hn.algolia.com/api/v1/search?query=' + query;
+  }, []);  // ✅ Callback deps are OK
+
+  useEffect(() => {
+    const url = getFetchUrl('react');
+    // ... Fetch data and do something ...
+  }, [getFetchUrl]); // ✅ Effect deps are OK
